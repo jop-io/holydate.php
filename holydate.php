@@ -6,7 +6,13 @@ class Holydate {
     public function __construct() {
         $this->Register = new \stdClass;
     }
-  
+    
+    /**
+     * Kontrollerar om ett datum matchar en registrerad helg- eller högtidsdag (en eller flera) 
+     * för ett angivet datum.
+     * 
+     * @param {string} $name Namn på helg- eller högtidsdag
+     */
     public function Register($name) {
         $this->Name = $name;
         $reg = new \stdClass;
@@ -28,7 +34,7 @@ class Holydate {
      * Kontrollerar om ett datum matchar en registrerad helg- eller högtidsdag (en eller flera) 
      * för ett angivet datum.
      * 
-     * @param {type} date Datumsträng
+     * @param {string} date Datumsträng
      * @returns {Array|null|undefined} Array med namn på de dagar som matchar angivet datum
      */
     public function Check($input_date) {
@@ -78,7 +84,7 @@ class Holydate {
      * 
      * Tex. Midsommarafton, Allhelgonaafton, Första advent osv.
      * 
-     * @param string $weekday_index 1=mån...7=sön
+     * @param {string} $weekday_index 1=mån...7=sön
      */
     public function Weekday($weekday_index) {
         $this->Register->{$this->Name}->Type = 'weekday';
@@ -89,7 +95,7 @@ class Holydate {
     /**
      * Sätter månad (månadsnummer).
      * 
-     * @param string $month_index 1=jan...12=dec
+     * @param {string} $month_index 1=jan...12=dec
      */
     public function Month($month_index) {
         $this->Register->{$this->Name}->MonthIndex = intval($month_index);
@@ -161,7 +167,7 @@ class Holydate {
      * 
      * @param int $input_ts Tidsstämpel för det datum som angivits
      * @param int $item Högtidsdag från $this->register, som ska kontrolleras
-     * @return int Tidsstämpel för datum som räknats fram
+     * @return int Tidsstämpel för det datum som räknats fram
      */
     public function CalcEaster($input_ts, $item) {
         $year = date('Y', $input_ts);
@@ -188,7 +194,7 @@ class Holydate {
      * 
      * @param int $input_ts Tidsstämpel för det datum som angivits
      * @param int $item Högtidsdag från $this->register, som ska kontrolleras
-     * @return int Tidsstämpel för datum som räknats fram
+     * @return int Tidsstämpel för det datum som räknats fram
      */
     public function CalcDate($input_ts, $item) {
         $y = date('Y', $input_ts);
@@ -204,7 +210,7 @@ class Holydate {
      * 
      * @param int $input_ts Tidsstämpel för det datum som angivits
      * @param int $item Högtidsdag från $this->register, som ska kontrolleras
-     * @return int Tidsstämpel för datum som räknats fram
+     * @return int Tidsstämpel för det datum som räknats fram
      */
     public function CalcWeekday($input_ts, $item) {
         $input_date = date('Y-m-d', $input_ts);
