@@ -59,7 +59,7 @@ class Holydate {
     /**
      * Sätter beräkningstypen till 'date'. Denna typ används för att beräkna
      * högtidsdagar som infaller på fasta datum. Tex. Första maj, Julafton, 
-	 * Nyårsafton osv.
+     * Nyårsafton osv.
      */
     public function Date() {
         $this->Register->{$this->Name}->Type = 'date';
@@ -69,7 +69,7 @@ class Holydate {
     /**
      * Sätter beräkningstypen till 'easter'. Denna typ används för att beräkna
      * högtidsdagar som infaller relativt till infallandet av påskdagen.
-	 * Tex. Dymmelonsdagen, Långfredagen, Kristi himmelfärd osv.
+     * Tex. Dymmelonsdagen, Långfredagen, Kristi himmelfärd osv.
      */
     public function Easter() {
         $this->Register->{$this->Name}->Type = 'easter';
@@ -80,9 +80,7 @@ class Holydate {
      * Sätter beräkningstypen till 'weekday'. Denna typ används för att beräkna
      * högtidsdagar som infaller på fasta veckodagar, men på varierande datum.
      * Tex. Midsommarafton, Allhelgonaafton, Första advent osv.
-     * 
-	 * 
-	 * 
+     *  
      * @param {int} $weekday_index 1=mån...7=sön
      */
     public function Weekday($weekday_index) {
@@ -142,7 +140,7 @@ class Holydate {
     
     /**
      * Sätter antal avvikande dagar (postivt eller negativt heltal) som ett 
-	 * datum ska avvika ifrån påskdagen.
+     * datum ska avvika ifrån påskdagen.
      * 
      * @param int $num_days Antal dagar
      */
