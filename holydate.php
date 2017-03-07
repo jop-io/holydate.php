@@ -35,7 +35,7 @@ class Holydate {
      * för ett angivet datum.
      * 
      * @param {string} date Datumsträng
-     * @returns {Array|null|undefined} Array med namn på de dagar som matchar angivet datum
+     * @returns {array|boolean} Array med namn på de dagar som matchar angivet datum eller false om ingen matchning finns
      */
     public function Check($input_date) {
         $input_ts = strtotime($input_date);
@@ -45,11 +45,11 @@ class Holydate {
             $day->Date    = $input_date;
             $day->DayName = $name;
             $day->IsRed   = $item->IsRed;
-            if ($item->Type === 'easter' && $input_ts === $this->CalcEaster($input_ts, $item)) {
+            if ($item->Type === 'easter' && $input_ts === $this->CalculateEaster($input_ts, $item)) {
                 $result[] = $day;
-            } else if ($item->Type === 'date' && $input_ts === $this->CalcDate($input_ts, $item)) {
+            } else if ($item->Type === 'date' && $input_ts === $this->CalculateDate($input_ts, $item)) {
                 $result[] = $day;
-            } else if ($item->Type === 'weekday' && $input_ts === $this->CalcWeekday($input_ts, $item)) {
+            } else if ($item->Type === 'weekday' && $input_ts === $this->CalculateWeekday($input_ts, $item)) {
                 $result[] = $day;
             }
         }
@@ -57,10 +57,9 @@ class Holydate {
     }
     
     /**
-     * Sätter beräkningstypen till 'datum'. Denna typ används för att beräkna
-     * infallandet av högtidsdagar på fasta datum.
-     * 
-     * Tex. Första maj, Julafton, Nyårsafton osv.
+     * Sätter beräkningstypen till 'date'. Denna typ används för att beräkna
+     * högtidsdagar som infaller på fasta datum. Tex. Första maj, Julafton, 
+	 * Nyårsafton osv.
      */
     public function Date() {
         $this->Register->{$this->Name}->Type = 'date';
@@ -68,10 +67,9 @@ class Holydate {
     }
     
     /**
-     * Sätter beräkningstypen till 'påsk'. Denna typ används för att beräkna
-     * infallandet av högtidsdagar som relateras till infallandet av påskdagen.
-     *  
-     * Tex. Dymmelonsdagen, Långfredagen, Kristi himmelfärd osv.
+     * Sätter beräkningstypen till 'easter'. Denna typ används för att beräkna
+     * högtidsdagar som infaller relativt till infallandet av påskdagen.
+	 * Tex. Dymmelonsdagen, Långfredagen, Kristi himmelfärd osv.
      */
     public function Easter() {
         $this->Register->{$this->Name}->Type = 'easter';
@@ -79,12 +77,13 @@ class Holydate {
     }
     
     /**
-     * Sätter beräkningstypen till 'veckodag'. Denna typ används för att beräkna
+     * Sätter beräkningstypen till 'weekday'. Denna typ används för att beräkna
      * högtidsdagar som infaller på fasta veckodagar, men på varierande datum.
-     * 
      * Tex. Midsommarafton, Allhelgonaafton, Första advent osv.
      * 
-     * @param {string} $weekday_index 1=mån...7=sön
+	 * 
+	 * 
+     * @param {int} $weekday_index 1=mån...7=sön
      */
     public function Weekday($weekday_index) {
         $this->Register->{$this->Name}->Type = 'weekday';
@@ -113,7 +112,7 @@ class Holydate {
     }
     
     /**
-     * Sätter att den första veckodagen som matchar weekday($weekday_index) 
+     * Sätter att den första veckodagen som matchar Weekday($weekday_index) 
      * ska retuneras.
      */
     public function First() {
@@ -122,7 +121,7 @@ class Holydate {
     }
     
     /**
-     * Sätter att den sista veckodagen som matchar weekday($weekday_index) 
+     * Sätter att den sista veckodagen som matchar Weekday($weekday_index) 
      * ska retuneras.
      */
     public function Last() {
@@ -142,8 +141,8 @@ class Holydate {
     }
     
     /**
-     * Sätter antal avvikande dagar (postivt eller negativt) som ett datum ska 
-     * avvika ifrån påskdagen.
+     * Sätter antal avvikande dagar (postivt eller negativt heltal) som ett 
+	 * datum ska avvika ifrån påskdagen.
      * 
      * @param int $num_days Antal dagar
      */
@@ -169,7 +168,7 @@ class Holydate {
      * @param int $item Högtidsdag från $this->register, som ska kontrolleras
      * @return int Tidsstämpel för det datum som räknats fram
      */
-    public function CalcEaster($input_ts, $item) {
+    public function CalculateEaster($input_ts, $item) {
         $year = date('Y', $input_ts);
         $a = $year % 19;
         $b = floor($year / 100);
@@ -196,7 +195,7 @@ class Holydate {
      * @param int $item Högtidsdag från $this->register, som ska kontrolleras
      * @return int Tidsstämpel för det datum som räknats fram
      */
-    public function CalcDate($input_ts, $item) {
+    public function CalculateDate($input_ts, $item) {
         $y = date('Y', $input_ts);
         $m = (intval($item->MonthIndex) < 9 ? '0' : '') . $item->MonthIndex;
         $d = (intval($item->DayIndex) < 9 ? '0' : '') . $item->DayIndex;
@@ -205,14 +204,14 @@ class Holydate {
     
     /**
      * Beräkar en tidsstämpel för när en viss veckodag infaller, ut ifrån givna 
-     * avgränsningar. Avgränsningar sätts med funktionerna weekday(), month(), 
-     * day(), interval(), first() och last().
+     * avgränsningar. Avgränsningar sätts med funktionerna Weekday(), Month(), 
+     * Day(), Interval(), First() och Last().
      * 
      * @param int $input_ts Tidsstämpel för det datum som angivits
      * @param int $item Högtidsdag från $this->register, som ska kontrolleras
      * @return int Tidsstämpel för det datum som räknats fram
      */
-    public function CalcWeekday($input_ts, $item) {
+    public function CalculateWeekday($input_ts, $item) {
         $input_date = date('Y-m-d', $input_ts);
         $month      = (intval($item->MonthIndex) < 9 ? '0' : '') . $item->MonthIndex;
         $day        = (intval($item->DayIndex) < 9 ? '0' : '') . $item->DayIndex;
@@ -241,7 +240,6 @@ class Holydate {
                 }
             }
         }
-        
         return false;
     }
 }
